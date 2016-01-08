@@ -1,0 +1,27 @@
+{
+    "name"        : "cb-clihp",
+    "version"     : "1.0.0",
+    "description" : "A Leightweight Command Line Interface (CLI) Helper",
+    "main"        : "index.js",
+    "scripts"     : {
+        "test": "node test"
+    },
+    "repository"  : {
+        "type": "git",
+        "url" : "git+ssh://git@github.com/cobolab/clihp.git"
+    },
+    "keywords"    : [
+        "CLI",
+        "Helper"
+    ],
+    "author"      : "Nanang Mahdaen El Agung <nanang@mahdaen.name>",
+    "license"     : "MIT",
+    "bugs"        : {
+        "url": "https://github.com/cobolab/clihp/issues"
+    },
+    "homepage"    : "https://github.com/cobolab/clihp#readme",
+    "dependencies": {
+        "cb-jsfix" : "^1.0.0",
+        "cli-color": "^1.1.0"
+    }
+}
