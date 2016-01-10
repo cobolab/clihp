@@ -125,6 +125,23 @@ class Parser {
 
         return has;
     }
+
+    /**
+     * Check does CLI has described config name.
+     * @returns {boolean}
+     */
+
+    hascfg () {
+        let has = false;
+
+        for ( let key in arguments ) {
+            let arg = arguments[ key ];
+
+            if ( Object.keys(this.cfg).indexOf(arg) > -1 ) has = true;
+        }
+
+        return has;
+    }
 }
 
 /**
@@ -135,14 +152,14 @@ class Helper extends Parser {
     // Create constructor.
     setup ( option ) {
         // Ensure the option is an object.
-        option = 'object' === typeof option ? option : {};
+        option = isObject(option) ? option : {};
 
         // Main Information.
-        this._pref = Array.isArray(option.prefix) ? option.prefix : [];
-        this._name = option.name || 'Command Line Helper';
-        this._info = option.info || 'A simple command line helper to quickly creates a command line app.';
+        this._pref = isArray(option.prefix) ? option.prefix : [];
+        this._name = option.name || 'Clihp';
+        this._info = option.info || 'A Lightweight Command Line Interface (CLI) Helper';
         this._vers = option.version || '1.0.0';
-        this._help = option.usage || '';
+        this._help = option.usage || 'Usage informations goes here';
         this._marg = option.space || '';
 
         // Create docs list.
@@ -165,7 +182,7 @@ class Helper extends Parser {
         var self = this;
 
         // Ensure type and info is defined.
-        if ( !'string' === typeof type || !'object' === typeof infos ) return this.help('Invalid doc type or infos.');
+        if ( !isString(type) || !isObject(infos) ) return this.help('Invalid doc type or infos.');
 
         // Get the name length to set the longest name.
         if ( infos.name && infos.name.length > this.max ) this.max = infos.name.length;
@@ -190,7 +207,7 @@ class Helper extends Parser {
 
     // Hidden handler.
     use ( name, handler ) {
-        if ( 'string' === typeof name && 'function' === typeof handler ) {
+        if ( isString(name) && isFunction(handler) ) {
             this._regs[ name ] = handler;
         }
 
@@ -345,6 +362,12 @@ function marginate ( input, length, color ) {
     str = colr[ color ](str);
 
     return str;
+}
+
+// Adding to global object.
+global.Clihp = {
+    Parser,
+    Helper
 }
 
 // Exporting class.
