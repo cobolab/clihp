@@ -1,6 +1,6 @@
 {
     "name"        : "cb-clihp",
-    "version"     : "1.0.1",
+    "version"     : "1.0.2",
     "description" : "A Lightweight Command Line Interface (CLI) Helper",
     "main"        : "index.js",
     "scripts"     : {

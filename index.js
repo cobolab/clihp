@@ -269,8 +269,6 @@ class Helper extends Parser {
                 console.log(hstr);
             }
 
-            console.log('');
-
             this.next();
         });
 
