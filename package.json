@@ -1,10 +1,10 @@
 {
     "name"        : "cb-clihp",
-    "version"     : "1.0.2",
+    "version"     : "1.0.3",
     "description" : "A Lightweight Command Line Interface (CLI) Helper",
     "main"        : "index.js",
     "scripts"     : {
-        "test": "node test"
+        "test": "node test --help"
     },
     "repository"  : {
         "type": "git",

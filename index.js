@@ -166,6 +166,7 @@ class Helper extends Parser {
         this._docs = {
             cmd : [],
             opt : [],
+            cfg : []
         };
 
         // Create listener.
@@ -237,61 +238,116 @@ class Helper extends Parser {
         console.log(this._marg + this._help);
 
         // Log the main usage.
-        console.log('');
-        console.log(
-            this._marg +
-            marginate('COMMANDS', self.max, 'blackBright') + '  ' +
-            marginate('ALIAS', self.max, 'blackBright') + '  ' +
-            marginate('DESCRIPTION', self.max, 'blackBright')
-        );
+        if ( this._docs.cmd.length > 0 ) {
+            console.log('');
+            console.log(
+                this._marg +
+                marginate('COMMANDS', self.max, 'blackBright') + '  ' +
+                marginate('ALIAS', self.max, 'blackBright') + '  ' +
+                marginate('DESCRIPTION', self.max, 'blackBright')
+            );
 
-        // Showing available commands.
-        forwait(this._docs.cmd, function ( info ) {
-            if ( info.name === 'default' ) {
+            // Showing available commands.
+            forwait(this._docs.cmd, function ( info ) {
+                if ( info.name === 'default' ) {
+                    this.next();
+
+                    return;
+                }
+
+                var mstr, hstr;
+
+                if ( 'string' === typeof info.about ) {
+                    mstr = self._marg;
+                    mstr += marginate(info.name || '', self.max, 'yellow');
+                    mstr += '  ' + marginate(info.alias || '', self.max, 'magenta');
+                    mstr += '  ' + info.about;
+                    console.log(mstr);
+                }
+                else if ( Array.isArray(info.about) && info.about.length > 0 ) {
+                    mstr = self._marg;
+                    mstr += marginate(info.name || '', self.max, 'yellow');
+                    mstr += '  ' + marginate(info.alias || '', self.max, 'magenta');
+                    mstr += '  ' + info.about[ 0 ];
+
+                    info.about.splice(0, 1);
+
+                    info.about.forEach(amsg => {
+                        mstr += '\r\n' + self._marg;
+                        mstr += marginate('', self.max);
+                        mstr += '  ' + marginate('', self.max);
+                        mstr += '  ' + amsg;
+                    });
+
+                    console.log(mstr);
+                }
+
+                if ( 'string' === typeof info.usage ) {
+                    hstr = self._marg;
+                    hstr = hstr + marginate('', self.max);
+                    hstr = hstr + '  ' + marginate('', self.max);
+                    hstr = hstr + '  [?] ' + info.usage;
+                    console.log(hstr);
+                }
+                else if ( Array.isArray(info.usage) ) {
+                    info.usage.forEach(imsg => {
+                        hstr = self._marg;
+                        hstr = hstr + marginate('', self.max);
+                        hstr = hstr + '  ' + marginate('', self.max);
+                        hstr = hstr + '  [?] ' + imsg;
+                        console.log(hstr);
+                    });
+                }
+
                 this.next();
+            });
+        }
 
-                return;
-            }
+        if ( this._docs.cfg.length > 0 ) {
+            console.log('');
+            console.log(
+                this._marg +
+                marginate('CONFIGS', self.max, 'blackBright') + '  ' +
+                marginate('VALUE TYPE', self.max, 'blackBright') + '  ' +
+                marginate('DESCRIPTION', self.max, 'blackBright')
+            );
 
-            var mstr, hstr;
+            // Showing available options.
+            forwait(this._docs.cfg, function ( info ) {
+                var mstr, hstr;
 
-            mstr = self._marg;
-            mstr += marginate(info.name || '', self.max, 'yellow');
-            mstr += '  ' + marginate(info.alias || '', self.max, 'magenta');
-            mstr += '  ' + info.about;
-            console.log(mstr);
+                mstr = self._marg;
+                mstr += marginate(info.name || '', self.max, 'yellow');
+                mstr += '  ' + marginate(info.type || '', self.max, 'magenta');
+                mstr += '  ' + info.about;
+                console.log(mstr);
 
-            if ( info.usage ) {
-                hstr = self._marg;
-                hstr = hstr + marginate('', self.max);
-                hstr = hstr + '  ' + marginate('', self.max);
-                hstr = hstr + '  ' + info.usage;
-                console.log(hstr);
-            }
+                this.next();
+            });
+        }
 
-            this.next();
-        });
+        if ( this._docs.opt.length > 0 ) {
+            console.log('');
+            console.log(
+                this._marg +
+                marginate('OPTIONS', self.max, 'blackBright') + '  ' +
+                marginate('ALIAS', self.max, 'blackBright') + '  ' +
+                marginate('DESCRIPTION', self.max, 'blackBright')
+            );
 
-        console.log('');
-        console.log(
-            this._marg +
-            marginate('OPTIONS', self.max, 'blackBright') + '  ' +
-            marginate('ALIAS', self.max, 'blackBright') + '  ' +
-            marginate('DESCRIPTION', self.max, 'blackBright')
-        );
+            // Showing available options.
+            forwait(this._docs.opt, function ( info ) {
+                var mstr, hstr;
 
-        // Showing available options.
-        forwait(this._docs.opt, function ( info ) {
-            var mstr, hstr;
+                mstr = self._marg;
+                mstr += marginate(info.name || '', self.max, 'yellow');
+                mstr += '  ' + marginate(info.alias || '', self.max, 'magenta');
+                mstr += '  ' + info.about;
+                console.log(mstr);
 
-            mstr = self._marg;
-            mstr += marginate(info.name || '', self.max, 'yellow');
-            mstr += '  ' + marginate(info.alias || '', self.max, 'magenta');
-            mstr += '  ' + info.about;
-            console.log(mstr);
-
-            this.next();
-        });
+                this.next();
+            });
+        }
 
         console.log('');
 
@@ -325,7 +381,8 @@ class Helper extends Parser {
                 this._regs.default.call(this, this.opt, this.val, this.cfg);
             }
             else {
-                this.help('At least one argument is required.');
+                console.log(colr.redBright('At least one argument is required.'));
+                console.log(`Run ${colr.greenBright(this._name)} ${colr.xterm(6)('--help')} for mor informations.`);
             }
         }
         else {
@@ -339,7 +396,8 @@ class Helper extends Parser {
                 this._regs[ this.cmd ].call(this, this.opt, this.val, this.cfg);
             }
             else {
-                this.help(colr.redBright('Invalid command: ') + colr.yellow(this.cmd));
+                console.log(colr.redBright('Unknown command: ') + colr.yellow(this.cmd));
+                console.log(`Run ${colr.greenBright(this._name)} ${colr.xterm(6)('--help')} for mor informations.`);
             }
         }
 

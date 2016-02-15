@@ -4,10 +4,9 @@ A lightweight Command Line Interface (CLI) helper.
 
 ## Usage
 
-Install the module using **`npm install --save cb-clihp`**, and load the module. After loaded, the **`Clihp`** object will be
-available on the global object.
+Install the module using **`npm install --save cb-clihp`**, and load the module. After loaded, the **`Clihp`** object will be available on the global object.
 
-```js
+``` js
 require('cb-clihp');
 
 // Creating parser instance.
@@ -18,6 +17,7 @@ var clh = new Clihp.Helper();
 ```
 
 ***
+
 ### Parser Properties
 
 * **`.cmd`** - A string represent the command name, taken from the first env. E.g: `build`
@@ -27,13 +27,13 @@ var clh = new Clihp.Helper();
 
 **Example**
 
-```bash
+``` bash
 node app.js build script host=localhost port=3000 --verbose
 ```
 
 **`app.js`**
 
-```js
+``` js
 require('cb-clihp');
 
 var clp = new Clihp.Parser();
@@ -54,7 +54,7 @@ Check does the cli has options.
 
 **Example**
 
-```js
+``` js
 clp.hasopt('--verbose', '-vb'); // True
 clp.hasopt('--debug');          // False
 ```
@@ -65,7 +65,7 @@ Check does the cli has values.
 
 **Example**
 
-```js
+``` js
 clp.hasval('script'); // True
 clp.hasval('styles'); // False
 ```
@@ -76,25 +76,24 @@ Check does the cli has configs.
 
 **Example**
 
-```js
+``` js
 clp.hascfg('host', 'port');   // True
 clp.hascfg('envi');           // False
 ```
 
 ***
+
 ## Helper
 
-With helper, you easily create a CLI app with simple steps, including showing the helps on the console. When creating helper,
-the class will create default commands to show the help (`-h`, `--help`, `help`) and show the version (`-v`, `--version`, `version`).
+With helper, you easily create a CLI app with simple steps, including showing the helps on the console. When creating helper, the class will create default commands to show the help (`-h`, `--help`, `help`) and show the version (`-v`, `--version`, `version`).
 
 **Example (app.js)**
 
-```js
-
+``` js
 // Creating helper instance.
 new Clihp.Helper()
 
-    // Setting up the CLI helper.
+// Setting up the CLI helper.
     .setup({
         name    : 'Clihp',
         info    : 'A Lightweight Command Line Interface (CLI) Helper',
@@ -102,7 +101,7 @@ new Clihp.Helper()
         usage   : `node app.js command [options...]`,
         prefix  : [
             `-->`,
-            `------------------------------------------------->`,
+            `-------- CLI HELPER ----------------------------------->`,
             `-->`,
         ]
     })
@@ -112,15 +111,12 @@ new Clihp.Helper()
         name  : 'start',
         alias : '-s',
         about : 'Start the server',
-        usage : 'Usage: node app.js start host=hostname',
-        
-        // Function that will be executed when the command name is match.
-        // This function will get 3 arguments, and become the helper instance.
+        usage : 'node app.js start host=hostname\r\n',
         exec( opt, val, cfg ) {
-            if (this.hasopt('--verbose')) {
+            if ( this.hasopt('--verbose') ) {
                 console.log('Starting server');
             }
-            
+
             if ( !this.hascfg('host') ) {
                 this.help('The host config is required!');
             }
@@ -133,19 +129,23 @@ new Clihp.Helper()
         name  : 'stop',
         alias : '-q',
         about : 'Stop the server',
+        usage : 'node app.js stop\r\n',
 
-        // Function that will be executed when the command name is match.
-        // This function will get 3 arguments, and become the helper instance.
         exec ( opt, val, cfg ) {
             console.log('Stopping server');
         }
     })
 
     // Adding configs
-    .add('opt', {
+    .add('cfg', {
         name  : 'host',
-        alias : '',
+        type  : 'String',
         about : 'Server hostname'
+    })
+    .add('cfg', {
+        name  : 'port',
+        type  : 'Number',
+        about : 'Server port'
     })
 
     // Adding options
@@ -162,10 +162,9 @@ new Clihp.Helper()
 
     // Initialize the helper. Helper will never working without running this method.
     .init();
-    
 ```
 
-```bash
+``` bash
 node app.js --help
 ```
 
@@ -173,13 +172,13 @@ Running the command above will resulting:
 
 ![CBLoggy](https://raw.githubusercontent.com/cobolab/clihp/master/sample.png)
 
-```bash
+``` bash
 node app.js start --verbose
 ```
 
 Running the command above will resulting:
 
-```bash
+``` bash
 Starting server
 ```
 
@@ -187,38 +186,34 @@ Starting server
 
 **`.setup()`**
 
-Setting up the CLI helper to show the helps.
+Setting up the CLI helper to show the help header.
 
 **`.add()`**
 
-Add command or options to the helper.
+Add commands, configs, and options to the helper.
 
 **Usage**
 
-```js
+``` js
 cli.add(type, options);
 ```
 
 * **`type`**      - String `cmd` or `opt`. Cmd is to add command, and opt is to add option.
 * **`options`**   - Object contains the command or option options.
-  
-- **`options.name`**  - **`Required`** String the primary command/option name.
-- **`options.alias`** - **`Optional`** String the command/option alias, separated by `,`.
-- **`options.about`** - **`Optional`** String about the command/option.
-- **`options.usage`** - **`Optional`** String about the how to use the command.
-- **`options.exec`**  - **`Required`** Function that will be executed when the command name is match with the command from cli. Optional for option.
-  
-**`.use()`**
+* **`options.name`**  - **`Required`** String the primary command/option name.
+* **`options.alias`** - **`Optional`** String the command/option alias, separated by `,`.
+* **`options.about`** - **`Optional`** String about the command/option. Leave blank to hide the command on the helper.
+* **`options.usage`** - **`Optional`** String about the how to use the command. Leave blank to hide the command on the helper.
+* **`options.type`** - **`Optional`** String about the config value type.
+* **`options.exec`**  - **`Required`** Function that will be executed when the command name is match with the command from cli. Optional for option.
 
-Hidden command, just like `.add()`, but the command is not displayed on the cli helps.
- 
 **`.help()`**
 
 Show the cli helps, with or without message.
 
 **Example**
 
-```js
+``` js
 clp.help('The command is not registered!');
 ```
 

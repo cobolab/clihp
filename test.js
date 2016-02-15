@@ -14,7 +14,7 @@ new Clihp.Helper()
         usage   : `node app.js command [options...]`,
         prefix  : [
             `-->`,
-            `------------------------------------------------->`,
+            `-------- CLI HELPER ----------------------------------->`,
             `-->`,
         ]
     })
@@ -24,7 +24,7 @@ new Clihp.Helper()
         name  : 'start',
         alias : '-s',
         about : 'Start the server',
-        usage : 'Usage: node app.js start host=hostname',
+        usage : 'node app.js start host=hostname\r\n',
         exec( opt, val, cfg ) {
             if ( this.hasopt('--verbose') ) {
                 console.log('Starting server');
@@ -42,6 +42,7 @@ new Clihp.Helper()
         name  : 'stop',
         alias : '-q',
         about : 'Stop the server',
+        usage : 'node app.js stop\r\n',
 
         exec ( opt, val, cfg ) {
             console.log('Stopping server');
@@ -49,9 +50,15 @@ new Clihp.Helper()
     })
 
     // Adding configs
-    .add('opt', {
+    .add('cfg', {
         name  : 'host',
+        type  : 'String',
         about : 'Server hostname'
+    })
+    .add('cfg', {
+        name  : 'port',
+        type  : 'Number',
+        about : 'Server port'
     })
 
     // Adding options
