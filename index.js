@@ -378,7 +378,7 @@ class Helper extends Parser {
         // Ensure argument is given, at least one argument.
         if ( this.def.length < 1 ) {
             if ( this._regs.default ) {
-                this._regs.default.call(this, this.opt, this.val, this.cfg);
+                this._regs.default.call(this, this.val, this.cfg, this.opt);
             }
             else {
                 console.log(colr.redBright('At least one argument is required.'));
@@ -393,11 +393,17 @@ class Helper extends Parser {
 
             // Call the handler.
             if ( this._regs[ this.cmd ] ) {
-                this._regs[ this.cmd ].call(this, this.opt, this.val, this.cfg);
+                this._regs[ this.cmd ].call(this, this.val, this.cfg, this.opt);
             }
             else {
-                console.log(colr.redBright('Unknown command: ') + colr.yellow(this.cmd));
-                console.log(`Run ${colr.greenBright(this._name)} ${colr.xterm(6)('--help')} for mor informations.`);
+                if ( this._regs.default ) {
+                    this.val.push(this.cmd);
+                    this._regs.default.call(this, this.val, this.cfg, this.opt);
+                }
+                else {
+                    console.log(colr.redBright('Unknown command: ') + colr.yellow(this.cmd));
+                    console.log(`Run ${colr.greenBright(this._name)} ${colr.xterm(6)('--help')} for mor informations.`);
+                }
             }
         }
 
