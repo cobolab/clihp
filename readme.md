@@ -65,6 +65,12 @@ console.log(clp.cfg); // { 'host': 'localhost', 'port': 3000 }
 
 All parser methods are accept multiple arguments. The examples below is related to the sample above.
 
+#### **`.ask(QUESTIONS, CALLBACK)`**
+
+A wrapper of **`Inquirer.prompt()`** module. For more informations about the `QUESTIONS` and `CALLBACK`, please refer to [Inquirer Docs](https://www.npmjs.com/package/inquirer).
+
+***
+
 #### **`.hasopt(OPTIONS...)`**
 
 Check does the cli has options.
@@ -78,7 +84,7 @@ clp.hasopt('--debug');          // False
 
 ***
 
-#### **`.hasval(ARGUMENTS...)`**
+#### **`.hasval(VALUES...)`**
 
 Check does the cli has values.
 
@@ -91,7 +97,7 @@ clp.hasval('styles'); // False
 
 ***
 
-#### **`.hascfg(VALUES...)`**
+#### **`.hascfg(CONFIGS...)`**
 
 Check does the cli has configs.
 
@@ -278,11 +284,15 @@ Run the Clihp Helper to get the CLI call to run the registered command.
 
 ### TODOS
 
-* [] Add prompt helper
-
+-
 ***
 
 ### Changelog
+
+#### **`v1.2.0`** - **`(Feb 24, 2016)`**
+
+* Added **`clp.ask(questions, callback)`** to wrap the **`Inquirer`** module.
+* Added ability to set multiple config name with single value. E.g: **`cli-cmd set-env DB_USERNAME=DB_PASSWORD=DB_DATABASE=docker`** will resulting **`{ DB_USERNAME: 'docker', DB_PASSWORD: 'docker', DB_DATABSE: 'docker` }`**
 
 #### **`v1.1.0`** - **`(Feb 17, 2016)`**
 
@@ -291,4 +301,3 @@ Run the Clihp Helper to get the CLI call to run the registered command.
 * Leave **`options.about`** and **`options.usage`** blank to hide the commands from help.
 * Added `Configs` group to the helper. **`$.add('cfg', OPTIONS)`**
 * Added ability to use Array[String…] and String on **`options.about`** and **`options.usage`**
-

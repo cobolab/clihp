@@ -4,6 +4,7 @@ if ( !global.JSFix ) require('cb-jsfix');
 
 /* Loading Required Modules */
 var colr = require('cli-color'),
+    line = require('inquirer'),
     oses = require('os'),
     path = require('path');
 
@@ -73,7 +74,16 @@ class Parser {
                 if ( arg.search('=') > -1 ) {
                     arg = arg.split('=');
 
-                    self.cfg[ arg[ 0 ] ] = arg[ 1 ];
+                    // Pick the last item as value.
+                    let val = arg[ arg.length - 1 ];
+
+                    // Iterate the items to set the key and value.
+                    arg.forEach(( key, i ) => {
+                        // Skip the last item since its not a key, but value.
+                        if ( i < (arg.length - 1) ) {
+                            self.cfg[ key ] = val;
+                        }
+                    });
                 }
 
                 // Get as options and values.
@@ -95,6 +105,18 @@ class Parser {
         });
 
         return this;
+    }
+
+    /**
+     * CLI Prompt
+     * A wrapper of Inquirer to help the Clihp to prompt questions.
+     *
+     * @param questions - Array questions list.
+     * @param callback - Function to handler the answers.
+     * @returns {*}
+     */
+    ask ( questions, callback ) {
+        return line.prompt(questions, callback);
     }
 
     // Option Checker.
